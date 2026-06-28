@@ -72,24 +72,19 @@ async function startBot() {
     }
   })
 if (config.usePairingCode && !conn.authState.creds.registered) {
-  const numero = process.env.BOT_NUMBER
+  const numero = '51912345678' // Tu número sin el +
 
-  if (!numero) {
-    console.log(chalk.red('❌ BOT_NUMBER no está configurado en Railway'))
-    process.exit(1)
-  }
-  
-    setTimeout(async () => {
-      try {
-        const raw = await conn.requestPairingCode(numero)
-        const code = raw?.match(/.{1,4}/g)?.join('-') ?? raw
-        console.log(`\n${chalk.bold.yellowBright('CÓDIGO:')} ${chalk.bold.bgGreen.white(` ${code} `)}\n`)
-      } catch (e) {
-        console.error(chalk.bold.bgRed.white(' [PAIRING ERROR] '), chalk.bold.redBright(e.message))
-        process.exit(1)
-      }
-    }, 3000)
-  }
+  setTimeout(async () => {
+    try {
+      const raw = await conn.requestPairingCode(numero)
+      const code = raw?.match(/.{1,4}/g)?.join('-') ?? raw
+      console.log(`\n${chalk.bold.yellowBright('CÓDIGO:')} ${chalk.bold.bgGreen.white(` ${code} `)}\n`)
+    } catch (e) {
+      console.error(chalk.bold.bgRed.white(' [PAIRING ERROR] '), chalk.bold.redBright(e.message))
+      process.exit(1)
+    }
+  }, 3000)
+    }
 
   conn.ev.on('creds.update', saveCreds)
 
