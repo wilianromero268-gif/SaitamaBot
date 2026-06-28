@@ -1,4 +1,4 @@
-import 'dotenv/config'
+iftenv/config'
 import * as baileysMod from '@whiskeysockets/baileys'
 import pino from 'pino'
 import fs from 'fs'
@@ -71,12 +71,14 @@ async function startBot() {
       return msg || undefined
     }
   })
+if (config.usePairingCode && !conn.authState.creds.registered) {
+  const numero = process.env.BOT_NUMBER
 
-  if (config.usePairingCode && !conn.authState.creds.registered) {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
-    const numero = await new Promise(res =>
-      rl.question(chalk.bold.yellowBright('\nINGRESA TU NÚMERO DE TELÉFONO (sin +): '), ans => { rl.close(); res(ans.replace(/\D/g, '')) })
-    )
+  if (!numero) {
+    console.log(chalk.red('❌ BOT_NUMBER no está configurado en Railway'))
+    process.exit(1)
+  }
+  
     setTimeout(async () => {
       try {
         const raw = await conn.requestPairingCode(numero)
