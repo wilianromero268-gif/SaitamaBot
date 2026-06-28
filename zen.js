@@ -1,4 +1,4 @@
-iftenv/config'
+import 'dotenv/config'
 import * as baileysMod from '@whiskeysockets/baileys'
 import pino from 'pino'
 import fs from 'fs'
@@ -72,7 +72,7 @@ async function startBot() {
     }
   })
 if (config.usePairingCode && !conn.authState.creds.registered) {
-  const numero = '51912345678' // Tu número sin el +
+  const numero = '51991579415' // Tu número sin el +
 
   setTimeout(async () => {
     try {
