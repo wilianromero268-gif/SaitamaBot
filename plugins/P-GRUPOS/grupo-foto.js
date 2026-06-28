@@ -1,5 +1,5 @@
 import { downloadContentFromMessage, jidNormalizedUser } from '@whiskeysockets/baileys'
-import Jimp from 'jimp'
+import { Jimp } from 'jimp'
 
 const S_WHATSAPP_NET = 's.whatsapp.net'
 
@@ -14,17 +14,29 @@ const handler = async (m, { conn }) => {
   try {
     const imageMsg = msg.message?.imageMessage || msg.message?.[mtype]
     const stream = await downloadContentFromMessage(imageMsg, 'image')
+
     const chunks = []
-    for await (const chunk of stream) chunks.push(chunk)
+    for await (const chunk of stream) {
+      chunks.push(chunk)
+    }
+
     const buffer = Buffer.concat(chunks)
 
     const img = await Jimp.read(buffer)
-    const size = Math.min(img.getWidth(), img.getHeight())
-    const finalBuffer = await img
-      .crop((img.getWidth() - size) / 2, (img.getHeight() - size) / 2, size, size)
-      .resize(640, 640)
-      .quality(90)
-      .getBufferAsync(Jimp.MIME_JPEG)
+
+    const size = Math.min(img.bitmap.width, img.bitmap.height)
+
+    img.crop({
+      x: (img.bitmap.width - size) / 2,
+      y: (img.bitmap.height - size) / 2,
+      w: size,
+      h: size
+    })
+
+    img.resize({ w: 640, h: 640 })
+    img.quality(90)
+
+    const finalBuffer = await img.getBuffer('image/jpeg')
 
     const targetJid = jidNormalizedUser(m.chat)
 
